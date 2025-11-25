@@ -1,4 +1,3 @@
-
 """Modèle représentant l'état et les actions d'un Tamagotchi."""
 
 from dataclasses import dataclass, asdict
@@ -15,6 +14,8 @@ def clamp(v: int) -> int:
 class Tamagotchi:
     """Entité principale stockant les statistiques et comportements."""
     nom: str
+    # Ajout de l'espèce de l'animal (Chat, Chien, ou Tamagotchi par défaut pour les vieilles sauvegardes)
+    espece: str = "Tamagotchi"
     faim: int = 50
     energie: int = 70
     humeur: int = 60
@@ -43,7 +44,8 @@ class Tamagotchi:
         self.humeur = clamp(self.humeur - 5)
         self._random_event()
         self._degrade()
-        return "🍖 Tu as nourri {0}.".format(self.nom)
+        # Utilisation de self.espece dans les messages
+        return f"🍖 Tu as nourri {self.nom} (ton {self.espece})."
 
     def jouer(self) -> str:
         """Améliore l'humeur mais consomme énergie et nourriture."""
@@ -52,7 +54,8 @@ class Tamagotchi:
         self.faim = clamp(self.faim - 10)
         self._random_event()
         self._degrade()
-        return "🎲 Vous jouez avec {0}.".format(self.nom)
+        # Utilisation de self.espece dans les messages
+        return f"🎲 Vous jouez avec {self.nom} (ton {self.espece})."
 
     def dormir(self) -> str:
         """Recharge l'énergie tout en laissant un peu baisser la faim."""
@@ -60,7 +63,8 @@ class Tamagotchi:
         self.faim = clamp(self.faim - 10)
         self._random_event()
         self._degrade()
-        return "😴 {0} a bien dormi.".format(self.nom)
+        # Utilisation de self.espece dans les messages
+        return f"😴 {self.nom} (ton {self.espece}) a bien dormi."
 
     def laver(self) -> str:
         """Augmente l'hygiène et apporte un léger bonus de bonne humeur."""
@@ -68,7 +72,8 @@ class Tamagotchi:
         self.humeur = clamp(self.humeur + 5)
         self._random_event()
         self._degrade()
-        return "🛁 {0} est tout propre.".format(self.nom)
+        # Utilisation de self.espece dans les messages
+        return f"🛁 {self.nom} (ton {self.espece}) est tout propre."
 
     def passer(self) -> str:
         """Laisse passer un tour en ne déclenchant qu'occasionnellement un événement."""
@@ -99,4 +104,5 @@ class Tamagotchi:
     @staticmethod
     def from_dict(d: dict) -> "Tamagotchi":
         """Reconstruit un Tamagotchi depuis un dictionnaire de données."""
+        # Le constructeur de dataclass gère les arguments passés dans le dictionnaire
         return Tamagotchi(**d)

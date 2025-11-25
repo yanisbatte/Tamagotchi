@@ -1,4 +1,3 @@
-
 from flask import Flask, jsonify, request
 from models import Tamagotchi
 from storage import save_game, load_game
@@ -7,7 +6,7 @@ app = Flask(__name__)
 
 
 def get_current_tamagotchi():
-    """Charge la sauvegarde courante ou Non si aucune partie."""
+    """Charge la sauvegarde courante ou None si aucune partie."""
     return load_game()
 
 
@@ -25,14 +24,18 @@ def create_tamagotchi():
     """Crée une nouvelle partie."""
     payload = request.get_json(silent=True) or {}
     nom = payload.get("nom") or payload.get("name") or "Pixel"
+    # Récupère l'espèce (pour le webservice) ou utilise la valeur par défaut
+    espece = payload.get("espece") or payload.get("species") or "Tamagotchi"
 
-    t = Tamagotchi(nom=nom)
+    # Passe l'espèce au constructeur
+    t = Tamagotchi(nom=nom, espece=espece)
     save_game(t)
 
     return (
         jsonify(
             {
-                "message": f"Nouvelle partie créée pour {t.nom}.",
+                # Utilise l'espèce dans le message de confirmation
+                "message": f"Nouvelle partie ({t.espece.capitalize()}) créée pour {t.nom}.",
                 "tamagotchi": t.as_dict(),
             }
         ),
@@ -86,7 +89,8 @@ def do_action():
         return (
             jsonify(
                 {
-                    "error": "Le Tamagotchi est mort, aucune action possible.",
+                    # Utilise l'espèce dans le message d'erreur
+                    "error": f"Le {t.espece} est mort, aucune action possible.",
                     "tamagotchi": t.as_dict(),
                 }
             ),

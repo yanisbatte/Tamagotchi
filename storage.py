@@ -1,4 +1,3 @@
-
 """Fonctions utilitaires pour la persistance des données du Tamagotchi."""
 
 import json, os
@@ -19,6 +18,7 @@ def load_game() -> Optional[Tamagotchi]:
     try:
         with open(SAVE_FILE, "r", encoding="utf-8") as f:
             data = json.load(f)
+            # La méthode from_dict du modèle gère le nouvel attribut 'espece'
             return Tamagotchi.from_dict(data)
     except Exception:
         # Fichier invalide ou corrompu : la partie ne peut pas être chargée.
